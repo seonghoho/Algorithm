@@ -7,7 +7,8 @@ d = {}
 for i in range(1001):
     for j in range(1001):
       d[i,j] = 0
-
+Max_x = 0
+Max_y = 0
 N = int(input())
 for num in range(N):
     x,y,rows,cols = map(int, input().split())
@@ -15,11 +16,14 @@ for num in range(N):
     for i in range(x,x+rows):
         for j in range(y,y+cols):
             d[i,j] = num+1
-
+            if Max_x < j :
+                Max_x = j
+            if Max_y < i :
+                Max_y = i
 for k in range(1,N+1):
     cnt = 0
-    for i in range(1001):
-        for j in range(1001):
+    for i in range(Max_y+1):
+        for j in range(Max_x+1):
             if d[i,j] == k:
                 cnt += 1
     print(cnt)
