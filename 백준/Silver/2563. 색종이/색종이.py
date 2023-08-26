@@ -1,14 +1,13 @@
-lst = [[0] * 100 for _ in range(100)]   # 100x100 크기 lst 생성
-N = int(input())                        # 반복 횟수 N 입력
+lst = [[0]*100 for _ in range(100)]
+N = int(input())
 for _ in range(N):
-    x, y = map(int, input().split())    # x, y 시작점 입력
-    for i in range(y, y + 10):          # for문 사용해서 주어진 점에서 +10 점까지 범위설정
-        for j in range(x, x + 10):
-            lst[i][j] = 1               # 해당 지점 1로 바꾸기
+    x, y = map(int, input().split())
+    for i in range(x, x+10):
+        for j in range(y,y+10):
+            if lst[i][j] ==1: continue
+            lst[i][j] = 1
 cnt = 0
-for i in range(100):                    # 100x100 크기 lst에서 1로 바뀐 칸의 갯수 count
-    for j in range(100):
-        if lst[i][j] == 1:
-            cnt += 1
+for i in lst:
+    cnt += i.count(1)
 
-print(cnt)              
+print(cnt)
