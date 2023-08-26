@@ -1,14 +1,19 @@
-lst = [[0]*1001 for _ in range(1001)]
 N = int(input())
-for num in range(1,N+1):
-    x,y,rows,cols = map(int, input().split())
-
-    for i in range(x,x+rows):
-        for j in range(y,y+cols):
-            lst[i][j] = num
-
-for k in range(1,N+1):
+lst = []
+for i in range(N):
+    sx,sy,ga,se = map(int,input().split())
+    lst.append([sx,sy,ga,se])
+dohwa = [[0]*1001 for _ in range(1001)]
+res = []
+for _ in range(len(lst)):
+    num = lst.pop()
     cnt = 0
-    for i in range(1001):
-        cnt += lst[i].count(k)
-    print(cnt)
+    for l in range(num[0],num[0]+num[2]):
+        for k in range(num[1],num[1]+num[3]):
+            if dohwa[l][k] == 1: continue
+            dohwa[l][k] = 1
+            cnt+=1
+    res.append(cnt)
+
+for _ in range(len(res)):
+    print(res.pop())
