@@ -16,8 +16,7 @@ used = [0] * (N + 1)
 used[0] = 1
 cnt = 0
 for i in range(1, N + 1):
-    if arr:
-        if used[i] == 0:
-            abc(i)
-            cnt += 1
+    if used[i] == 0:
+        abc(i)
+        cnt += 1
 print(cnt)
