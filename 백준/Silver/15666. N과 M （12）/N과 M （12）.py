@@ -1,17 +1,17 @@
 n, m = map(int, input().split())
-nums = sorted(list(map(int, input().split())))
-temp = []
+lst = sorted(list(map(int, input().split())))
+llst = []
 
-def dfs(start):
-    if len(temp) == m:
-        print(*temp)
+def dfs(level):
+    if len(llst) == m:
+        print(*llst)
         return
-    remember_me = 0
-    for i in range(start, n):
-        if remember_me != nums[i]:
-            temp.append(nums[i])
-            remember_me = nums[i]
+    nums = 0
+    for i in range(level, n):
+        if nums != lst[i]:
+            llst.append(lst[i])
+            nums = lst[i]
             dfs(i)
-            temp.pop()
+            llst.pop()
 
 dfs(0)
