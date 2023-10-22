@@ -5,9 +5,7 @@ public class Solution {
         Scanner sc = new Scanner(System.in);
         int a = sc.nextInt();
         int b = sc.nextInt();
-        String sa = "a = ";
-        String sb = "b = ";
-        System.out.println(sa + a);
-        System.out.println(sb + b);
+        
+        System.out.println("a = "+a+"\n"+"b = "+b);
     }
 }
