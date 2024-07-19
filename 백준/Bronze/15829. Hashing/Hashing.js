@@ -9,10 +9,17 @@ const input = require("fs")
 const n = input[0];
 const lst = input[1].split("");
 
-let sum = 0;
+const r = 31n;
+const M = 1234567891n;
+
+let sum = 0n;
+let pow = 1n;
 
 for (let i = 0; i < n; i++) {
-  sum += (lst[i].charCodeAt() - 96) * 31 ** i;
+  sum += BigInt(lst[i].charCodeAt() - 96) * pow;
+  pow *= r;
 }
 
-console.log(sum);
+if (sum >= M) sum %= M;
+
+console.log(Number(sum));
