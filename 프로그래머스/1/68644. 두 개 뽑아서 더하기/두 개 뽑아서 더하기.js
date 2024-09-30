@@ -5,9 +5,10 @@ function solution(numbers) {
             newSet.add(numbers[i]+ numbers[j])
         }
     }
-    let resArr = new Array()
-    newSet.forEach((num) => {
-        resArr.push(num)
-    })
+    // let resArr = new Array()
+    // newSet.forEach((num) => {
+    //     resArr.push(num)
+    // })
+    let resArr = [...newSet]
     return resArr.sort((a,b) => a-b)
 }
