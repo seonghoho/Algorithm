@@ -17,4 +17,16 @@ rl.on('line', function (line) {
     
 }).on('close',function(){
     str = input[0];
+    let res = []
+    
+    function isUpperCase(str) {
+      return str === str.toUpperCase();
+    }
+    
+    for(let i=0; i<str.length; i++) {
+        let newWord = isUpperCase(str[i]) ? str[i].toLowerCase() : str[i].toUpperCase()      
+        res.push(newWord)
+    }
+    // console.log(res)
+    // console.log(res.join(''))
 });
