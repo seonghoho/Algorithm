@@ -1,0 +1,72 @@
+name: Send Commit Info to Discord
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract commit info and filter
+        id: commit_info
+        run: |
+          COMMIT_MESSAGE="$(git log -1 --pretty=%B)"
+          COMMIT_DATE="$(git log -1 --pretty=%cd --date=format:'%Y-%m-%d %H:%M:%S')"
+
+          echo "📌 커밋 메시지: $COMMIT_MESSAGE"
+          echo "📌 커밋 날짜: $COMMIT_DATE"
+
+          # 문제 풀이 커밋인지 확인
+          if echo "$COMMIT_MESSAGE" | grep -Eq "(\[.*\]) Title:|Time:.*Space:"; then
+            echo "✅ 문제 풀이 커밋입니다. 전송을 진행합니다."
+          else
+            echo "❌ 문제 풀이 커밋이 아닙니다. 전송하지 않습니다."
+            echo "SKIP_WEBHOOK=true" >> $GITHUB_ENV
+            exit 0
+          fi
+
+          # 문제 제목 및 정보 추출
+          PROBLEM_TITLE=$(echo "$COMMIT_MESSAGE" | sed -n 's/.*Title: \(.*\), Time:.*/\1/p' || echo "Unknown")
+          PROBLEM_LEVEL=$(echo "$COMMIT_MESSAGE" | sed -n 's/.*\[\(.*\)\].*/\1/p' || echo "N/A")
+          TIME_INFO=$(echo "$COMMIT_MESSAGE" | sed -n 's/.*Time: \([0-9.]* ms\).*/\1/p' || echo "N/A")
+          MEMORY_INFO=$(echo "$COMMIT_MESSAGE" | sed -n 's/.*Memory: \([0-9.]* [KM]B\|[0-9.]* MB\|[0-9.]* KB\).*/\1/p' || echo "N/A")
+
+          # 환경 변수 설정
+          echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
+          echo "PROBLEM_TITLE=$PROBLEM_TITLE" >> $GITHUB_ENV
+          echo "PROBLEM_LEVEL=$PROBLEM_LEVEL" >> $GITHUB_ENV
+          echo "TIME_INFO=$TIME_INFO" >> $GITHUB_ENV
+          echo "MEMORY_INFO=$MEMORY_INFO" >> $GITHUB_ENV
+
+      - name: Send commit info to Discord
+        if: ${{ env.SKIP_WEBHOOK != 'true' }}
+        run: |
+          JSON_DATA='{
+            "content": "풀이 시각 : '"${{ env.COMMIT_DATE }}"'",
+            "embeds": [
+              {
+                "title": "문제 정보",
+                "description": "**제목**: '"${{ env.PROBLEM_TITLE }}"'\n**난이도**: '"${{ env.PROBLEM_LEVEL }}"'",
+                "color": 3447003,
+                "fields": [
+                  {
+                    "name": "실행 시간",
+                    "value": "'"${{ env.TIME_INFO }}"'",
+                    "inline": true
+                  },
+                  {
+                    "name": "메모리 사용",
+                    "value": "'"${{ env.MEMORY_INFO }}"'",
+                    "inline": true
+                  }
+                ]
+              }
+            ]
+          }'
+
+          curl -H "Content-Type: application/json" -X POST -d "$JSON_DATA" "${{ secrets.DISCORD_WEBHOOK_URL }}"
